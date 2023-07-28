@@ -18,27 +18,22 @@ public class StudentService {
 	@Autowired
 	private StudentRepository repository;
 
-	public ArrayList<Student> getAllStudent() {
-		ArrayList<Student> allStudent = new ArrayList<Student>();
+	public ArrayList<Student> getAllStudents() {
+		ArrayList<Student> allStudents = new ArrayList<Student>();
 		try {
-			List<List<Object>> values = repository.getAllStudent();
+			List<List<Object>> values = repository.getAllStudents();
 			// A1, B1, C1 is titles for a student in sheets (firstName, middleName,
 			// lastName), so we delete them.
 			values.remove(0);
 			values.forEach(object -> {
-				Student student = new Student();
-				student.setId(values.indexOf(object) + 2);
-				student.setFirstName(object.get(0).toString());
-				student.setMiddleName(object.get(1).toString());
-				student.setLastName(object.get(2).toString());
-				allStudent.add(student);
-
+				allStudents.add(Student.builder().id(values.indexOf(object) + 2).firstName(object.get(0).toString())
+						.middleName(object.get(1).toString()).lastName(object.get(2).toString()).build());
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return allStudent;
+		return allStudents;
 	}
 
 	public Student getStudentById(int id) {
@@ -78,15 +73,15 @@ public class StudentService {
 
 		return null;
 	}
-	
+
 	public String deleteStudentById(int id) {
 		try {
-			
+
 			return repository.deleteStudentById(id);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 }

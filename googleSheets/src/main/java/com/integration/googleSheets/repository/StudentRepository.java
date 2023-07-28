@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
@@ -21,20 +20,16 @@ import com.integration.googleSheets.model.Student;
 
 @Repository
 public class StudentRepository {
-	private static String applicationName;
-	private static Credential authorized;
-	private static Sheets sheetsService;
-	private static String spreadsheetId;
+	private final Sheets sheetsService;
+	private final String spreadsheetId;
 
 	public StudentRepository() throws IOException, GeneralSecurityException {
-		authorized = DBContext.authorize();
-		spreadsheetId = "1zIPhCaePEWaOSOgA-M1v3GzuEyaEQSoXIO85ij77X0Q";
-		applicationName = "Students";
-		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(),
-				JacksonFactory.getDefaultInstance(), authorized).setApplicationName(applicationName).build();
+		this.spreadsheetId = "1zIPhCaePEWaOSOgA-M1v3GzuEyaEQSoXIO85ij77X0Q";
+		this.sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(),
+				JacksonFactory.getDefaultInstance(), DBContext.authorize()).setApplicationName("Students").build();
 	}
 
-	public List<List<Object>> getAllStudent() throws IOException {
+	public List<List<Object>> getAllStudents() throws IOException {
 
 		return sheetsService.spreadsheets().values().get(spreadsheetId, "A:C").execute().getValues();
 	}
